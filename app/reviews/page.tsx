@@ -3,110 +3,139 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, MessageSquare, TrendingUp, User, Send, MapPin } from "lucide-react";
 
-// ✅ Connected to data.ts — branch lists stay in sync automatically
 import { MEN_BRANCHES, WOMEN_BRANCHES } from "@/lib/data";
-
-// ✅ Connected to global category state (set on home/welcome page)
 import { useCategory } from "@/components/CategoryProvider";
 
 // ------------------------------------------------------------------
 // 🔌 SUPABASE INTEGRATION — TODO LIST
 // ------------------------------------------------------------------
-// 1. Install supabase client:
-//      npm install @supabase/supabase-js
+// 1. npm install @supabase/supabase-js
 //
-// 2. Create a supabase client file at lib/supabaseClient.ts:
+// 2. Create lib/supabaseClient.ts:
 //      import { createClient } from "@supabase/supabase-js";
 //      export const supabase = createClient(
 //        process.env.NEXT_PUBLIC_SUPABASE_URL!,
 //        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 //      );
 //
-// 3. Create a "reviews" table in your Supabase dashboard with columns:
-//      id          uuid  primary key default uuid_generate_v4()
-//      name        text  not null
-//      rating      int2  not null  (1–5)
-//      branch      text  not null
-//      category    text  not null  ("men" | "women")
-//      comment     text  not null
-//      created_at  timestamptz default now()
+// 3. Create "reviews" table (SQL):
+//      create table reviews (
+//        id uuid primary key default uuid_generate_v4(),
+//        name text not null,
+//        rating smallint not null check (rating >= 1 and rating <= 5),
+//        branch text not null,
+//        category text not null check (category in ('men', 'women')),
+//        comment text not null,
+//        created_at timestamptz default now()
+//      );
+//      alter table reviews enable row level security;
+//      create policy "read" on reviews for select using (true);
+//      create policy "insert" on reviews for insert with check (true);
 //
-// 4. Replace the INITIAL_REVIEWS mock array below with a real fetch:
-//      import { supabase } from "@/lib/supabaseClient";
-//      In a useEffect, run:
-//        const { data } = await supabase
-//          .from("reviews")
-//          .select("*")
-//          .eq("category", category)   // filter by men/women
-//          .order("created_at", { ascending: false });
-//        if (data) setReviews(data);
+// 4. Replace useState init with a useEffect fetch:
+//      useEffect(() => {
+//        const load = async () => {
+//          const { data } = await supabase
+//            .from("reviews")
+//            .select("*")
+//            .eq("category", activeCategory)
+//            .order("created_at", { ascending: false });
+//          if (data) setReviews(data);
+//        };
+//        load();
+//      }, [activeCategory]);
 //
-// 5. Replace the local setReviews() optimistic insert in handleSubmit with:
-//        const { error } = await supabase.from("reviews").insert([newReview]);
-//        if (!error) { /* refetch or optimistically prepend */ }
+// 5. Replace optimistic insert in handleSubmit with:
+//      const { error } = await supabase.from("reviews").insert([newReview]);
+//      if (!error) setReviews((prev) => [newReview, ...prev]);
 //
-// 6. Add .env.local:
+// 6. Add to .env.local:
 //      NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 //      NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 // ------------------------------------------------------------------
 
-// ⚠️ MOCK DATA — replace this with a Supabase fetch (see TODO #4 above)
-// The `category` field is included here so the shape matches the DB schema
-const INITIAL_REVIEWS = [
-  { id: 1, name: "Arjun M.",  rating: 5, date: "May 2, 2026",    branch: "Byatarayanapura",   category: "men",   comment: "Absolutely flawless fade. The hot towel shave is a must-try experience." },
-  { id: 2, name: "Rohan K.",  rating: 4, date: "April 15, 2026", branch: "Vignan Nagar Branch", category: "men",  comment: "Great atmosphere and a really sharp cut. Had to wait a few minutes past my appointment time, but the result was worth it." },
-  { id: 3, name: "Kiran S.",  rating: 5, date: "April 10, 2026", branch: "Basava Nagar Branch", category: "men",  comment: "Best barbershop in Bangalore, hands down. The vibe is immaculate and the service is elite." },
+// ── Strict types ──────────────────────────────────────────────────
+type CategoryType = "men" | "women";
+
+interface Review {
+  id: number;
+  name: string;
+  rating: number;
+  branch: string;
+  category: CategoryType;
+  date: string;
+  comment: string;
+}
+
+interface FormData {
+  name: string;
+  rating: number;
+  branch: string;
+  comment: string;
+}
+
+// ⚠️ MOCK DATA — remove once Supabase fetch (TODO #4) is wired in
+const INITIAL_REVIEWS: Review[] = [
+  { id: 1, name: "Arjun M.",  rating: 5, date: "May 2, 2026",    branch: "Byatarayanapura",    category: "men",   comment: "Absolutely flawless fade. The hot towel shave is a must-try experience." },
+  { id: 2, name: "Rohan K.",  rating: 4, date: "April 15, 2026", branch: "Vignan Nagar Branch", category: "men",   comment: "Great atmosphere and a sharp cut. Had to wait a few minutes, but the result was worth it." },
+  { id: 3, name: "Kiran S.",  rating: 5, date: "April 10, 2026", branch: "Basava Nagar Branch", category: "men",   comment: "Best barbershop in Bangalore, hands down. The vibe is immaculate and the service is elite." },
   { id: 4, name: "Priya R.",  rating: 5, date: "May 5, 2026",    branch: "Womens Studio",       category: "women", comment: "Amazing experience! The colour treatment was perfect and the staff were so attentive." },
   { id: 5, name: "Sneha D.",  rating: 5, date: "April 20, 2026", branch: "Womens Studio",       category: "women", comment: "Loved the ambience and my hair has never looked better. Will be back!" },
 ];
 
 export default function ReviewsPage() {
-  const { category } = useCategory(); // "men" | "women"
+  const { category } = useCategory(); // string | null from CategoryProvider
 
-  // ✅ Pick the right branch list based on selected gender category
-  const activeBranches = category === "women" ? WOMEN_BRANCHES : MEN_BRANCHES;
+  // Normalise to a strict CategoryType — never null inside this component
+  const activeCategory: CategoryType = category === "women" ? "women" : "men";
 
-  // ⚠️ Filter mock reviews by category — with Supabase this filter moves to the query (TODO #4)
-  const [reviews, setReviews] = useState(
-    INITIAL_REVIEWS.filter((r) => r.category === category)
+  const activeBranches = activeCategory === "women" ? WOMEN_BRANCHES : MEN_BRANCHES;
+
+  // ⚠️ Seeded from mock data filtered by category; replace with Supabase fetch (TODO #4)
+  const [reviews, setReviews] = useState<Review[]>(
+    INITIAL_REVIEWS.filter((r) => r.category === activeCategory)
   );
 
   const [hoveredStar, setHoveredStar] = useState(0);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     rating: 5,
-    branch: "", // empty string = "Choose a branch" placeholder
+    branch: "",
     comment: "",
   });
 
-  // ✅ All stats derive from the live `reviews` state — update instantly when a review is added
-  // ⚠️ TODO (Supabase): replace useState init + these calcs with a useEffect fetch;
-  //    the formulas below stay unchanged since they operate on the fetched array
+  // ── Stats — derived from live state, recalculate on every new review ──
   const totalReviews = reviews.length;
   const averageRating = totalReviews > 0
     ? (reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1)
     : "0.0";
   const fiveStarCount = reviews.filter((r) => r.rating === 5).length;
-  const fiveStarPercentage = totalReviews > 0 ? Math.round((fiveStarCount / totalReviews) * 100) : 0;
+  const fiveStarPercentage = totalReviews > 0
+    ? Math.round((fiveStarCount / totalReviews) * 100)
+    : 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.comment || !formData.branch) return;
 
-    const newReview = {
+    const newReview: Review = {
       id: Date.now(),
       name: formData.name,
       rating: formData.rating,
       branch: formData.branch,
-      category, // ✅ always saves with the currently active category
-      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      category: activeCategory, // always "men" | "women" — never null
+      date: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
       comment: formData.comment,
     };
 
     // ⚠️ Optimistic local insert — replace with Supabase insert (TODO #5)
-    setReviews([newReview, ...reviews]);
+    setReviews((prev) => [newReview, ...prev]);
 
-    // Reset form; branch goes back to empty so placeholder shows again
+    // Reset; branch back to "" so placeholder shows again
     setFormData({ name: "", rating: 5, branch: "", comment: "" });
   };
 
@@ -119,9 +148,8 @@ export default function ReviewsPage() {
         <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-white">
           CLIENT <span className="text-[#FFCC00]">REVIEWS</span>
         </h1>
-        {/* ✅ Subtitle changes with gender category */}
         <p className="text-gray-400 max-w-2xl mx-auto">
-          What our {category === "women" ? "ladies" : "gentlemen"} are saying — or leave your own mark.
+          What our {activeCategory === "women" ? "ladies" : "gentlemen"} are saying — or leave your own mark.
         </p>
       </motion.div>
 
@@ -168,13 +196,17 @@ export default function ReviewsPage() {
                       onClick={() => setFormData({ ...formData, rating: star })}
                       onMouseEnter={() => setHoveredStar(star)}
                       onMouseLeave={() => setHoveredStar(0)}
-                      className={`transition-all ${star <= (hoveredStar || formData.rating) ? "fill-[#FFCC00] text-[#FFCC00] scale-110" : "text-gray-600 hover:text-gray-400"}`}
+                      className={`transition-all ${
+                        star <= (hoveredStar || formData.rating)
+                          ? "fill-[#FFCC00] text-[#FFCC00] scale-110"
+                          : "text-gray-600 hover:text-gray-400"
+                      }`}
                     />
                   ))}
                 </div>
               </div>
 
-              {/* Name input */}
+              {/* Name */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-400 uppercase">Name</label>
                 <div className="relative">
@@ -190,7 +222,7 @@ export default function ReviewsPage() {
                 </div>
               </div>
 
-              {/* ✅ Branch dropdown — driven by data.ts, filtered by men/women category */}
+              {/* Branch dropdown — options from data.ts, filtered by men/women */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-400 uppercase">Branch Visited</label>
                 <div className="relative">
@@ -201,11 +233,9 @@ export default function ReviewsPage() {
                     onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
                     className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-[#FFCC00] transition-colors appearance-none cursor-pointer"
                   >
-                    {/* ✅ Default placeholder — required + empty value forces user to pick */}
                     <option value="" disabled className="bg-black text-gray-500">
                       Choose a branch...
                     </option>
-                    {/* ✅ Options come from data.ts, switch with men/women automatically */}
                     {activeBranches.map((b) => (
                       <option key={b.slug} value={b.name} className="bg-black text-white">
                         {b.name}
@@ -215,7 +245,7 @@ export default function ReviewsPage() {
                 </div>
               </div>
 
-              {/* Comment textarea */}
+              {/* Comment */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-400 uppercase">Your Experience</label>
                 <textarea
@@ -224,7 +254,7 @@ export default function ReviewsPage() {
                   value={formData.comment}
                   onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#FFCC00] transition-colors resize-none"
-                  placeholder={`Tell us about your ${category === "women" ? "salon" : "barbershop"} experience...`}
+                  placeholder={`Tell us about your ${activeCategory === "women" ? "salon" : "barbershop"} experience...`}
                 />
               </div>
 
@@ -239,7 +269,6 @@ export default function ReviewsPage() {
         </div>
 
         {/* RIGHT COLUMN: Review Feed */}
-        {/* ✅ Shows only reviews matching the current men/women category */}
         <div className="lg:col-span-7">
           <div className="flex flex-col gap-6">
             {reviews.length === 0 && (
