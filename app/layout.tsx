@@ -3,26 +3,26 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ScrollProvider from "@/components/ScrollProvider";
+import { CategoryProvider } from "@/components/CategoryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Weldone Barbers | Master the Art of Grooming",
-  description: "Experience premium grooming at our exclusive branches.",
+  title: "WELDONE | Premium Grooming",
+  description: "The ultimate standard in modern styling.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="overflow-x-hidden">
-      <body className={`${inter.className} antialiased overflow-x-hidden bg-[#050505] text-white`}>
-        <ScrollProvider>
+      <body className={`${inter.className} bg-[#050505] text-white overflow-x-hidden antialiased`}>
+        <CategoryProvider>
           <Navbar />
-          <main className="pt-24 min-h-[100svh] flex flex-col">
+          <main className="min-h-screen">
             {children}
           </main>
           <Footer />
-        </ScrollProvider>
+        </CategoryProvider>
       </body>
     </html>
   );

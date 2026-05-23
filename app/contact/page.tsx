@@ -40,7 +40,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="relative container mx-auto px-6 py-24 min-h-screen max-w-6xl">
+    <div className="relative container mx-auto px-6 pt-40 sm:pt-48 pb-24 min-h-screen max-w-6xl overflow-hidden">
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#FFCC00]/5 blur-[150px] pointer-events-none z-0 rounded-full mix-blend-screen" />
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16 relative z-10">

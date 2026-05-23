@@ -4,9 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
+import { useCategory } from "@/components/CategoryProvider";
+import { MEN_BRANCHES, WOMEN_BRANCHES } from "@/lib/data";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { category } = useCategory();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileBranchOpen, setMobileBranchOpen] = useState(false);
 
@@ -15,20 +18,21 @@ export default function Navbar() {
     setMobileBranchOpen(false);
   }, [pathname]);
 
+  // Build branch sublinks directly from data.ts — always in sync
+  const branchSubLinks = category === "women"
+    ? WOMEN_BRANCHES.map((b) => ({ name: b.name, path: `/womens-studio` }))
+    : MEN_BRANCHES.map((b) => ({ name: b.name, path: `/branches/${b.slug}` }));
+
   const links = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Services", path: "/services" },
-    { 
-      name: "Branches", 
+    {
+      name: "Branches",
       path: "/branches",
-      subLinks: [
-        { name: "Downtown Core", path: "/branches/downtown-core" },
-        { name: "koramangala-hub", path: "/branches/koramangala-hub" },
-        { name: "indiranagar-elite", path: "/branches/indiranagar-elite" }
-      ]
+      subLinks: branchSubLinks,
     },
-    { name: "Barbers", path: "/barbers" },
+    { name: category === "women" ? "Stylists" : "Barbers", path: "/barbers" },
     { name: "Gallery", path: "/gallery" },
     { name: "Reviews", path: "/reviews" },
     { name: "Contact", path: "/contact" },
@@ -40,9 +44,9 @@ export default function Navbar() {
         <div className="fixed inset-0 z-[90] lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
       )}
 
-      <motion.nav 
-        initial={{ y: -100, opacity: 0 }} 
-        animate={{ y: 0, opacity: 1 }} 
+      <motion.nav
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
         className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-[100] bg-black/80 backdrop-blur-3xl border border-white/10 shadow-2xl rounded-2xl flex flex-col"
       >
@@ -55,12 +59,12 @@ export default function Navbar() {
           <div className="hidden lg:flex gap-8 items-center">
             {links.map((link) => {
               const isActive = pathname === link.path || (link.subLinks && pathname.startsWith(link.path));
-              
+
               if (link.subLinks) {
                 return (
                   <div key={link.name} className="relative group py-2">
                     <div className="flex items-center gap-1 cursor-pointer">
-                      <Link 
+                      <Link
                         href={link.path}
                         className={`text-sm font-bold uppercase tracking-wider transition-colors ${isActive ? "text-[#FFCC00]" : "text-gray-400 group-hover:text-white"}`}
                       >
@@ -72,10 +76,10 @@ export default function Navbar() {
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all">
                       <div className="bg-[#0a0a0a] border border-white/10 rounded-xl p-2 min-w-[200px] shadow-2xl flex flex-col gap-1">
                         {link.subLinks.map((sub) => (
-                          <Link 
-                            key={sub.name} 
+                          <Link
+                            key={sub.name}
                             href={sub.path}
-                            className="px-4 py-3 text-xs font-bold text-gray-400 hover:text-black hover:bg-[#FFCC00] rounded-lg transition-all uppercase tracking-widest"
+                            className="px-4 py-3 text-xs font-bold text-gray-400 hover:bg-[#FFCC00] hover:text-black rounded-lg transition-all uppercase tracking-widest"
                           >
                             {sub.name}
                           </Link>
@@ -94,7 +98,7 @@ export default function Navbar() {
               );
             })}
           </div>
-          
+
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden text-[#FFCC00] p-2 bg-white/5 rounded-lg border border-white/10">
             {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -107,26 +111,25 @@ export default function Navbar() {
               <div className="flex flex-col gap-2 py-6">
                 {links.map((link) => {
                   const isActive = pathname === link.path;
-                  
+
                   if (link.subLinks) {
                     return (
                       <div key={link.name} className="flex flex-col items-center">
                         <div className="flex items-center gap-4 py-2">
-                          <Link 
+                          <Link
                             href={link.path}
                             className={`text-base font-bold uppercase tracking-wider ${isActive ? "text-[#FFCC00]" : "text-gray-400"}`}
                           >
                             {link.name}
                           </Link>
-                          {/* Chevron is the only thing that toggles the sub-menu */}
-                          <button 
+                          <button
                             onClick={(e) => { e.preventDefault(); setMobileBranchOpen(!mobileBranchOpen); }}
                             className="p-2 bg-white/5 rounded-full border border-white/10"
                           >
-                            <ChevronDown size={16} className={`transition-transform text-[#FFCC00] ${mobileBranchOpen ? 'rotate-180' : ''}`} />
+                            <ChevronDown size={16} className={`transition-transform text-[#FFCC00] ${mobileBranchOpen ? "rotate-180" : ""}`} />
                           </button>
                         </div>
-                        
+
                         <AnimatePresence>
                           {mobileBranchOpen && (
                             <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden w-full px-8">

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function AboutPage() {
   return (
-    <div className="relative container mx-auto px-6 py-24 min-h-screen max-w-5xl">
+    <div className="relative container mx-auto px-6 pt-40 sm:pt-48 pb-24 min-h-screen max-w-6xl overflow-hidden">
       
       {/* Premium Gold Ambient Glow */}
       <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-[#FFCC00]/5 blur-[150px] pointer-events-none z-0 rounded-full mix-blend-screen" />

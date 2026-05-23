@@ -1,13 +1,10 @@
 // app/branches/[slug]/page.tsx
 import BranchClient from "./BranchClient";
+import { MEN_BRANCHES } from "@/lib/data";
 
-// This runs on the server during build time to generate the 3 branches
+// Dynamically pull slugs from the actual data — never goes out of sync again
 export function generateStaticParams() {
-  return [
-    { slug: "downtown-core" },
-    { slug: "koramangala-hub" },
-    { slug: "indiranagar-elite" }
-  ];
+  return MEN_BRANCHES.map((branch) => ({ slug: branch.slug }));
 }
 
 export default async function BranchDetails({ params }: { params: Promise<{ slug: string }> }) {
