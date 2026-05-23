@@ -96,7 +96,7 @@ export const MEN_TEAM = [
     name: "Shami", 
     location: "Basava Nagar Branch", 
     // TODO: Drop 4:5 ratio image in public folder and update name here
-    image: "/Sajid.png" 
+    image: "/Shami.png" 
   },
   { 
     name: "Nadeem", 

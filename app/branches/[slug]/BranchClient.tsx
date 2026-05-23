@@ -49,9 +49,7 @@ export default function BranchClient({ slug }: { slug: string }) {
                 <Clock className="text-[#FFCC00]" size={24} /> <span className="text-lg">{branch.hours}</span>
               </div>
             </div>
-            <button className="w-full sm:w-auto px-8 py-5 bg-[#FFCC00] text-black font-black uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-colors shadow-[0_0_20px_rgba(255,204,0,0.3)]">
-              Book Appointment Here
-            </button>
+            
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative bg-[#0a0a0a]">
