@@ -1,6 +1,38 @@
+// Gallery preview image arrays (replace with your actual image URLs or local paths)
+export const MEN_GALLERY_PREVIEW = [
+  "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1512690459411-b9245aed614b?q=80&w=800&auto=format&fit=crop",
+];
+
+export const WOMEN_GALLERY_PREVIEW = [
+  "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?q=80&w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop",
+];
+
+// Reviews
+export const MEN_REVIEWS = [
+  { name: "Rahul S.", text: "Best fade in Bangalore. The attention to detail is unmatched.", rating: 5 },
+  { name: "Karan M.", text: "Premium experience from start to finish. Highly recommend the beard sculpt.", rating: 5 },
+  { name: "David L.", text: "Found my permanent barber. The atmosphere is incredible.", rating: 5 },
+  { name: "Vikram K.", text: "Sharpest lineup I've ever had. True professionals.", rating: 5 },
+];
+
+export const WOMEN_REVIEWS = [
+  { name: "Anjali P.", text: "The balayage they did is absolutely stunning. I feel like a movie star!", rating: 5 },
+  { name: "Neha R.", text: "Finally a studio that understands exactly what I want. Perfect styling.", rating: 5 },
+  { name: "Sarah T.", text: "The keratin treatment completely transformed my hair. So luxurious.", rating: 5 },
+  { name: "Priya V.", text: "Exceptional bridal makeup and pre-bridal services. Thank you!", rating: 5 },
+];
 // ==========================================
 // 1. BRANCH LOCATIONS DATA
 // ==========================================
+
 export const MEN_BRANCHES = [
   { 
     slug: "byatarayanapura", // Made lowercase, matches name
@@ -162,7 +194,7 @@ export const MEN_SERVICES = [
     title: "Head Massage",
     image: "/Head Massage.png",
     items: [
-      { name: "Olive Oil", price: "120" },
+      { name: "Olive Oil", price: "150" },
       { name: "Navaratan", price: "150" },
       { name: "Coconut", price: "150" },
       { name: "Almond", price: "150" },
