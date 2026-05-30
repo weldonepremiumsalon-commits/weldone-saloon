@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Phone, Mail } from "lucide-react"; // Removed Instagram, Facebook, Twitter
+import { MapPin, Phone, Mail } from "lucide-react"; 
 
 export default function Footer() {
   return (
@@ -13,7 +13,6 @@ export default function Footer() {
           
           {/* Column 1: THE BRAND LOGO */}
           <div className="space-y-6">
-            {/* UPDATED: Image Logo Copied Here */}
             <Link href="/" className="group inline-block">
               <img 
                 src="/logo.png" 
@@ -26,7 +25,7 @@ export default function Footer() {
               Uncompromising precision. Timeless style. Experience the ultimate standard in modern barbering.
             </p>
             
-            {/* Social Icons - Replaced with raw SVGs so they never break */}
+            {/* Social Icons */}
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-[#FFCC00] hover:bg-white/10 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
@@ -51,14 +50,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Legal */}
+          {/* Column 3: Legal (UPDATED LINKS HERE) */}
           <div>
             <h4 className="text-white font-bold uppercase tracking-widest mb-6">Support</h4>
             <ul className="space-y-3 text-sm text-gray-400">
               <li><Link href="/contact" className="hover:text-[#FFCC00] transition-colors">Contact Us</Link></li>
               <li><Link href="/reviews" className="hover:text-[#FFCC00] transition-colors">Client Reviews</Link></li>
-              <li><Link href="#" className="hover:text-[#FFCC00] transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-[#FFCC00] transition-colors">Terms of Service</Link></li>
+              {/* Added actual paths to privacy and terms */}
+              <li><Link href="/privacy" className="hover:text-[#FFCC00] transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-[#FFCC00] transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -68,11 +68,11 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-[#FFCC00] shrink-0 mt-0.5" />
-                <span>123 Tech Plaza, Downtown Core, Bangalore</span>
+                <span>Vignan Nagar Branch</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-[#FFCC00] shrink-0" />
-                <span>+91 98765 43210</span>
+                <span>+91</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-[#FFCC00] shrink-0" />

@@ -2,15 +2,15 @@
 import { motion } from "framer-motion";
 
 const stats = [
-  { value: "2022", label: "Founded" },
-  { value: "5+", label: "Branches" },
+  { value: "2002", label: "Founded" },
+  { value: "3", label: "Branches" },
   { value: "10K+", label: "Happy Clients" },
-  { value: "15+", label: "Expert Stylists" },
+  { value: "10+", label: "Expert Stylists" },
 ];
 
 const timeline = [
   {
-    year: "2022",
+    year: "2002",
     title: "The First Cut",
     desc: "Weldone opened its doors in Byatarayanapura, Bangalore — a single chair, a bold vision, and an obsession with precision grooming.",
   },
@@ -24,11 +24,7 @@ const timeline = [
     title: "Men & Women",
     desc: "Weldone expanded its vision beyond barbering, launching dedicated women's studios to bring the same premium experience to all.",
   },
-  {
-    year: "2025",
-    title: "Citywide Presence",
-    desc: "With 5+ branches across the city and counting, Weldone became Bangalore's most talked-about grooming destination.",
-  },
+
 ];
 
 const values = [

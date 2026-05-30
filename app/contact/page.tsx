@@ -22,7 +22,7 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); 
     
-    const targetEmail = "mraleem2004@gmail.com"; 
+    const targetEmail = "email"; 
     
     const subject = encodeURIComponent(`New Inquiry from ${formData.firstName} ${formData.lastName}`);
     
@@ -54,22 +54,22 @@ export default function ContactPage() {
           <div className="glass-card bg-black/60 p-8 rounded-3xl flex items-center gap-6 group hover:border-[#FFCC00]/50 transition-colors">
             <div className="w-16 h-16 rounded-full bg-[#FFCC00]/10 flex items-center justify-center text-[#FFCC00] group-hover:scale-110 transition-transform"><MapPin size={28} /></div>
             <div>
-              <h3 className="text-xl font-bold mb-1 text-white">Headquarters</h3>
-              <p className="text-gray-400">123 Tech Plaza, Downtown Core, Bangalore</p>
+              <h3 className="text-xl font-bold mb-1 text-white">Main Branch</h3>
+              <p className="text-gray-400">Vignan Nagar Branch</p>
             </div>
           </div>
           <div className="glass-card bg-black/60 p-8 rounded-3xl flex items-center gap-6 group hover:border-[#FFCC00]/50 transition-colors">
             <div className="w-16 h-16 rounded-full bg-[#FFCC00]/10 flex items-center justify-center text-[#FFCC00] group-hover:scale-110 transition-transform"><Phone size={28} /></div>
             <div>
               <h3 className="text-xl font-bold mb-1 text-white">Direct Line</h3>
-              <p className="text-gray-400">+91 98765 43210</p>
+              <p className="text-gray-400">phone no</p>
             </div>
           </div>
           <div className="glass-card bg-black/60 p-8 rounded-3xl flex items-center gap-6 group hover:border-[#FFCC00]/50 transition-colors">
             <div className="w-16 h-16 rounded-full bg-[#FFCC00]/10 flex items-center justify-center text-[#FFCC00] group-hover:scale-110 transition-transform"><Mail size={28} /></div>
             <div>
               <h3 className="text-xl font-bold mb-1 text-white">Email Us</h3>
-              <p className="text-gray-400">mraleem2004@gmail.com</p>
+              <p className="text-gray-400">email</p>
             </div>
           </div>
         </motion.div>

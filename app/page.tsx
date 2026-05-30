@@ -4,27 +4,30 @@ import Link from "next/link";
 import { ArrowRight, Scissors, Star, Quote } from "lucide-react";
 import { useState, useRef } from "react";
 
-// ── Import only men's data ──
-import { MEN_GALLERY_PREVIEW, MEN_REVIEWS } from "@/lib/data";
+import { MEN_BRANCHES, MEN_REVIEWS, GALLERY_INTERIOR } from "@/lib/data";
 
 export default function HomePage() {
-  // ── Video background state ──
   const videoSrc = "/hero.mp4";
   const posterImage =
-    "https://images.unsplash.com/photo-1605497788044-5a32c7078486?q=80&w=2000&auto=format&fit=crop";
+    "/saloon.png";
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // ── Men‑only content ──
+  // Get all interior image URLs
+  const allInteriorImages = GALLERY_INTERIOR.map((item) => item.image);
+
+  // Split into two unique sets for the two rows
+  const midpoint = Math.ceil(allInteriorImages.length / 2);
+  const row1BaseImages = allInteriorImages.slice(0, midpoint);
+  const row2BaseImages = allInteriorImages.slice(midpoint);
+
+  // Duplicate each set for infinite scroll
+  const infiniteRow1 = [...row1BaseImages, ...row1BaseImages];
+  const infiniteRow2 = [...row2BaseImages, ...row2BaseImages];
+
   const marqueeText =
-    "PRECISION FADES • HOT TOWEL SHAVES • BEARD SCULPTING • CLASSIC POMPADOURS • SCALP TREATMENTS • ";
-
-  const galleryData = MEN_GALLERY_PREVIEW;
+    "HAIR CUT & SHAVE • HEAD MASSAGE • HAIR SPA • HAIR COLOURING • SKIN CARE FACIAL • NATURAL FACIAL • RAAGA • CLEAN UP • D-TAN • ";
   const reviewsData = MEN_REVIEWS;
-
-  // Duplicate for infinite scroll
-  const infiniteGalleryRow1 = [...galleryData, ...galleryData];
-  const infiniteGalleryRow2 = [...galleryData.slice().reverse(), ...galleryData.slice().reverse()];
 
   return (
     <div className="bg-[#050505] text-white overflow-x-hidden w-full">
@@ -51,10 +54,8 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-[#050505]" />
         </div>
 
-        {/* Ambient Center Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-[#FFCC00]/5 blur-[100px] sm:blur-[150px] pointer-events-none z-0 rounded-full mix-blend-screen" />
 
-        {/* Hero Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center flex-grow text-center pb-28">
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
@@ -65,7 +66,6 @@ export default function HomePage() {
             <Scissors size={24} className="sm:w-7 sm:h-7" />
           </motion.div>
 
-          {/* Responsive Headline */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,18 +107,12 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Fixed Marquee at absolute bottom */}
         <div className="absolute bottom-0 left-0 w-full overflow-hidden bg-[#FFCC00] py-3 sm:py-4 z-20 shadow-[0_-10px_30px_rgba(255,204,0,0.15)]">
           <motion.div
             className="flex w-max"
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 50 }}
           >
-            <div className="flex whitespace-nowrap">
-              <span className="text-black font-black uppercase tracking-[0.2em] text-xs sm:text-sm mx-2">
-                {marqueeText} {marqueeText}
-              </span>
-            </div>
             <div className="flex whitespace-nowrap">
               <span className="text-black font-black uppercase tracking-[0.2em] text-xs sm:text-sm mx-2">
                 {marqueeText} {marqueeText}
@@ -128,9 +122,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* =========================================
-          SECTION 2: ABOUT PREVIEW
-          ========================================= */}
+      {/* SECTION 2: ABOUT PREVIEW */}
       <section className="py-20 sm:py-24 px-4 sm:px-6 relative">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] text-[#FFCC00] mb-4">
@@ -155,9 +147,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* =========================================
-          SECTION 3: INFINITE GALLERY
-          ========================================= */}
+      {/* SECTION 3: INFINITE GALLERY – two rows with unique image sets */}
       <section className="py-10 sm:py-12 overflow-hidden bg-black/50 border-y border-white/5 relative">
         <div className="absolute top-0 right-0 w-16 sm:w-64 h-full bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
         <div className="absolute top-0 left-0 w-16 sm:w-64 h-full bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
@@ -167,36 +157,36 @@ export default function HomePage() {
           <motion.div
             className="flex w-max gap-3 sm:gap-4"
             animate={{ x: ["-50%", "0%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 50 }}
           >
-            {infiniteGalleryRow1.map((src, idx) => (
+            {infiniteRow1.map((src, idx) => (
               <div
                 key={`row1-${idx}`}
                 className="w-48 sm:w-64 md:w-80 h-40 sm:h-48 md:h-60 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-white/5 relative group"
               >
                 <img
                   src={src}
-                  alt="Gallery Preview"
+                  alt="Branch interior"
                   className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-500"
                 />
               </div>
             ))}
           </motion.div>
 
-          {/* Row 2: Right to Left */}
+          {/* Row 2: Right to Left – uses completely different images */}
           <motion.div
             className="flex w-max gap-3 sm:gap-4"
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 50 }}
           >
-            {infiniteGalleryRow2.map((src, idx) => (
+            {infiniteRow2.map((src, idx) => (
               <div
                 key={`row2-${idx}`}
                 className="w-48 sm:w-64 md:w-80 h-40 sm:h-48 md:h-60 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-white/5 relative group"
               >
                 <img
                   src={src}
-                  alt="Gallery Preview"
+                  alt="Branch interior"
                   className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-500"
                 />
               </div>
@@ -206,17 +196,15 @@ export default function HomePage() {
 
         <div className="text-center mt-10 sm:mt-12 px-4">
           <Link
-            href="/gallery"
+            href="/gallery?tab=interior"
             className="px-8 py-4 w-full max-w-sm mx-auto sm:w-auto bg-white/5 text-white font-bold uppercase tracking-widest rounded-xl hover:bg-white/10 hover:text-[#FFCC00] transition-colors border border-white/10 inline-flex justify-center items-center gap-2 text-xs sm:text-sm"
           >
-            View Full Lookbook
+            Explore The Space
           </Link>
         </div>
       </section>
 
-      {/* =========================================
-          SECTION 4: TESTIMONIALS
-          ========================================= */}
+      {/* SECTION 4: TESTIMONIALS */}
       <section className="py-20 sm:py-24 px-4 sm:px-6 relative">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 mb-10 sm:mb-12">

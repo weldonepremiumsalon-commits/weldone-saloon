@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Phone, Clock, ChevronDown, ArrowLeft, Map } from "lucide-react";
+import { MapPin, Phone, Clock, ChevronDown, ArrowLeft, Map, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { MEN_SERVICES, MEN_BRANCHES, MEN_TEAM } from "@/lib/data";
 
@@ -12,7 +12,6 @@ export default function BranchClient({ slug }: { slug: string }) {
 
   if (!branch) return <div className="py-40 text-center text-white text-2xl font-bold">Branch Not Found</div>;
 
-  // SMART FIX: Prevents "Basava Nagar Branch Branch" if the data already contains the word "Branch"
   const displayName = branch.name.replace(/\s+branch$/i, '');
 
   return (
@@ -27,35 +26,39 @@ export default function BranchClient({ slug }: { slug: string }) {
         
         {/* SECTION 1: Branch Hero */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-8">
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter mb-6 uppercase text-white">
+          
+          {/* FIX 3: Added min-w-0 here to prevent grid column blowout */}
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="min-w-0">
+            
+            {/* FIX 1 & 2: Added break-words, and tweaked lg/xl sizing so it shrinks slightly when splitting into 2 columns */}
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-black tracking-tighter mb-6 uppercase text-white break-words">
               {displayName} <br/> <span className="text-[#FFCC00]">Branch</span>
             </h1>
+            
             <div className="space-y-6 mb-10">
               <div className="flex items-center gap-4 text-gray-300 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <MapPin className="text-[#FFCC00]" size={24} /> <span className="text-lg">{branch.address}</span>
+                <MapPin className="text-[#FFCC00] shrink-0" size={24} /> <span className="text-lg truncate">{branch.address}</span>
               </div>
               <div className="flex items-center gap-4 text-gray-300 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <Phone className="text-[#FFCC00]" size={24} /> <span className="text-lg">{branch.phone}</span>
+                <Phone className="text-[#FFCC00] shrink-0" size={24} /> <span className="text-lg">{branch.phone}</span>
               </div>
               <div className="flex items-center gap-4 text-gray-300 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <Clock className="text-[#FFCC00]" size={24} /> <span className="text-lg">{branch.hours}</span>
+                <Clock className="text-[#FFCC00] shrink-0" size={24} /> <span className="text-lg">{branch.hours}</span>
               </div>
             </div>
-            
+         
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative bg-[#050505]">
-            {/* FIXED IMAGE: Object-cover handles mixed aspect ratios, removed dark gradient, added premium inner ring */}
             <img src={branch.image} alt={branch.name} className="w-full h-[350px] sm:h-[450px] lg:h-[500px] object-cover object-center" />
             <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
           </motion.div>
         </div>
 
-        {/* SECTION 2: Interactive Live Google Map */}
+        {/* SECTION 3: Interactive Live Google Map */}
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="pt-12 border-t border-white/10">
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-3">
+          <div className="mb-8 text-center sm:text-left">
+            <div className="inline-flex items-center justify-center sm:justify-start gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-3">
               <Map size={14} className="text-[#FFCC00]" />
               <span className="text-xs font-bold uppercase tracking-widest text-gray-300">Navigation Portal</span>
             </div>
@@ -65,8 +68,41 @@ export default function BranchClient({ slug }: { slug: string }) {
             <iframe src={branch.mapUrl} className="w-full h-full border-0 opacity-80 group-hover:opacity-100 transition-opacity duration-500 color-scheme-dark" allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </div>
         </motion.div>
+        
+        {/* SECTION 2: The Space (Interior Gallery) */}
+        {branch.interiorImages && branch.interiorImages.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="pt-12 border-t border-white/10">
+            <div className="mb-10 text-center sm:text-left">
+              <div className="inline-flex items-center justify-center sm:justify-start gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-3">
+                <ImageIcon size={14} className="text-[#FFCC00]" />
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-300">Gallery</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter">The <span className="text-[#FFCC00]">Space</span></h2>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {branch.interiorImages.map((img, idx) => (
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, scale: 0.95 }} 
+                  whileInView={{ opacity: 1, scale: 1 }} 
+                  viewport={{ once: true }} 
+                  transition={{ delay: idx * 0.1 }} 
+                  className="rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-white/5 aspect-[4/3] relative group shadow-lg"
+                >
+                  <img 
+                    src={img} 
+                    alt={`${branch.name} interior ${idx + 1}`} 
+                    className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-        {/* SECTION 3: Meet The Team */}
+        {/* SECTION 4: Meet The Team */}
         {branchArtists && branchArtists.length > 0 && (
           <div className="pt-12 border-t border-white/10">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
@@ -92,7 +128,7 @@ export default function BranchClient({ slug }: { slug: string }) {
           </div>
         )}
 
-        {/* SECTION 4: Standard Branch Services */}
+        {/* SECTION 5: Standard Branch Services */}
         <div className="pt-12 border-t border-white/10 max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-4">Branch <span className="text-[#FFCC00]">Services</span></h2>
