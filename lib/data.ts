@@ -60,7 +60,7 @@ export const MEN_BRANCHES = [
     address: "Basava Nagar, Bangalore", 
     hours: "7:30 AM - 10:00 PM", 
     phone: "+91 ", 
-    image: "/mensalloninside.jpg", 
+    image: "/Basavanagar_branch.png", 
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d485.99938522181003!2d77.68014453196895!3d12.972166134007272!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae116e3176508b%3A0x6b0a912215cf9557!2sWel%20Done%20Hair%20Salon!5e0!3m2!1sen!2sin!4v1780129700304!5m2!1sen!2sin",
     // NEW: Add your interior photos here!
     interiorImages: [
@@ -97,7 +97,7 @@ export const MEN_TEAM = [
   },
   { 
     name: "Aryan", 
-    location: "Byatarayanapura", 
+    location: "Kuvempu Road", 
     image: "/Aryan.png" 
   },
   { 
@@ -122,12 +122,12 @@ export const MEN_TEAM = [
   },
   { 
     name: "Nadeem", 
-    location: "Byatarayanapura", 
+    location: "Kuvempu Road", 
     image: "/Nadeem.png" 
   },
   { 
     name: "Fardeen", 
-    location: "Byatarayanapura", 
+    location: "Kuvempu Road", 
     image: "/Fardeen.png" 
   },
 ];
