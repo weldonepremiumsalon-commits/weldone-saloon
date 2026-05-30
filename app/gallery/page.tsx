@@ -1,13 +1,11 @@
 "use client";
 import { useState } from "react";
-import { useCategory } from "@/components/CategoryProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
-import { MEN_GALLERY, WOMEN_GALLERY } from "@/lib/data";
+import { MEN_GALLERY } from "@/lib/data";
 
 export default function GalleryPage() {
-  const { category } = useCategory();
-  const activeGallery = category === "women" ? WOMEN_GALLERY : MEN_GALLERY;
+  const activeGallery = MEN_GALLERY;
   
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   
@@ -30,37 +28,38 @@ export default function GalleryPage() {
     <div className="relative w-full min-h-screen px-4 sm:px-6 lg:px-12 pt-40 sm:pt-48 pb-24 flex flex-col items-center overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#FFCC00]/5 blur-[150px] pointer-events-none z-0 rounded-full mix-blend-screen" />
 
-      <AnimatePresence mode="wait">
-        <motion.div key={category} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="w-full flex flex-col items-center z-10">
-          
-          <div className="mb-16 text-center w-full max-w-3xl">
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-4 uppercase">
-              THE <span className="text-[#FFCC00]">LOOKBOOK</span>
-            </h1>
-            <p className="text-gray-400 text-lg">Curated craftsmanship for {category === "women" ? "women" : "men"}.</p>
-          </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full flex flex-col items-center z-10"
+      >
+        <div className="mb-16 text-center w-full max-w-3xl">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-4 uppercase">
+            THE <span className="text-[#FFCC00]">LOOKBOOK</span>
+          </h1>
+          <p className="text-gray-400 text-lg">Curated craftsmanship for men.</p>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-7xl">
-            {activeGallery.map((item, index) => (
-              <motion.div 
-                key={item.id}
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.1 }}
-                onClick={() => setSelectedIndex(index)}
-                className="group relative aspect-[4/5] rounded-2xl overflow-hidden cursor-pointer bg-white/5"
-              >
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 lg:grayscale lg:group-hover:grayscale-0" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <div className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-white/10">
-                    <Maximize2 size={18} className="text-[#FFCC00]" />
-                  </div>
-                  <p className="text-[#FFCC00] text-xs font-bold uppercase tracking-widest mb-1 translate-y-4 group-hover:translate-y-0 transition-transform">{item.category}</p>
-                  <h3 className="text-white text-xl font-bold translate-y-4 group-hover:translate-y-0 transition-transform delay-75">{item.title}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-7xl">
+          {activeGallery.map((item, index) => (
+            <motion.div 
+              key={item.id}
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.1 }}
+              onClick={() => setSelectedIndex(index)}
+              className="group relative aspect-[4/5] rounded-2xl overflow-hidden cursor-pointer bg-white/5"
+            >
+              <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 lg:grayscale lg:group-hover:grayscale-0" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                <div className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-white/10">
+                  <Maximize2 size={18} className="text-[#FFCC00]" />
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </AnimatePresence>
+                <p className="text-[#FFCC00] text-xs font-bold uppercase tracking-widest mb-1 translate-y-4 group-hover:translate-y-0 transition-transform">{item.category}</p>
+                <h3 className="text-white text-xl font-bold translate-y-4 group-hover:translate-y-0 transition-transform delay-75">{item.title}</h3>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
 
       {/* Lightbox Modal */}
       <AnimatePresence>

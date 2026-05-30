@@ -1,43 +1,26 @@
 "use client";
 import { motion } from "framer-motion";
-import { useCategory } from "@/components/CategoryProvider";
 import Link from "next/link";
-import { ArrowRight, Scissors, Sparkles, Star, Quote } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { ArrowRight, Scissors, Star, Quote } from "lucide-react";
+import { useState, useRef } from "react";
 
-// ── Import data from your existing data.ts ──
-import {
-  MEN_GALLERY_PREVIEW,
-  WOMEN_GALLERY_PREVIEW,
-  MEN_REVIEWS,
-  WOMEN_REVIEWS,
-} from "@/lib/data"; // adjust path if needed
+// ── Import only men's data ──
+import { MEN_GALLERY_PREVIEW, MEN_REVIEWS } from "@/lib/data";
 
 export default function HomePage() {
-  const { category, setCategory } = useCategory();
-  const isWomen = category === "women";
-
   // ── Video background state ──
-  const videoSrc = isWomen ? "/heroin.mp4" : "/hero.mp4";
+  const videoSrc = "/hero.mp4";
   const posterImage =
     "https://images.unsplash.com/photo-1605497788044-5a32c7078486?q=80&w=2000&auto=format&fit=crop";
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    setIsVideoLoaded(false);
-    if (videoRef.current) {
-      videoRef.current.load();
-    }
-  }, [category]);
+  // ── Men‑only content ──
+  const marqueeText =
+    "PRECISION FADES • HOT TOWEL SHAVES • BEARD SCULPTING • CLASSIC POMPADOURS • SCALP TREATMENTS • ";
 
-  // ── Dynamic content ──
-  const marqueeText = isWomen
-    ? "BALAYAGE • KERATIN SPA • BRIDAL STYLING • CREATIVE COLOR • PRECISION CUTS • SIGNATURE BLOWOUTS • "
-    : "PRECISION FADES • HOT TOWEL SHAVES • BEARD SCULPTING • CLASSIC POMPADOURS • SCALP TREATMENTS • ";
-
-  const galleryData = isWomen ? WOMEN_GALLERY_PREVIEW : MEN_GALLERY_PREVIEW;
-  const reviewsData = isWomen ? WOMEN_REVIEWS : MEN_REVIEWS;
+  const galleryData = MEN_GALLERY_PREVIEW;
+  const reviewsData = MEN_REVIEWS;
 
   // Duplicate for infinite scroll
   const infiniteGalleryRow1 = [...galleryData, ...galleryData];
@@ -45,12 +28,10 @@ export default function HomePage() {
 
   return (
     <div className="bg-[#050505] text-white overflow-x-hidden w-full">
-      
       {/* =========================================
           SECTION 1: HERO (100vh) – VIDEO BACKGROUND
           ========================================= */}
       <div className="relative min-h-[100dvh] flex flex-col overflow-hidden pt-24 sm:pt-32 w-full">
-        
         {/* Video Background */}
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#050505]">
           <video
@@ -69,26 +50,23 @@ export default function HomePage() {
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-[#050505]" />
         </div>
-        
+
         {/* Ambient Center Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-[#FFCC00]/5 blur-[100px] sm:blur-[150px] pointer-events-none z-0 rounded-full mix-blend-screen" />
 
-        {/* Hero Content - Added pb-28 to safeguard against marquee overlap on short screens */}
+        {/* Hero Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center flex-grow text-center pb-28">
-          
           <motion.div
-            key={`icon-${category}`}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, type: "spring" }}
             className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white/5 border border-white/10 rounded-full backdrop-blur-md text-[#FFCC00]"
           >
-            {isWomen ? <Sparkles size={24} className="sm:w-7 sm:h-7" /> : <Scissors size={24} className="sm:w-7 sm:h-7" />}
+            <Scissors size={24} className="sm:w-7 sm:h-7" />
           </motion.div>
 
-          {/* ── RESPONSIVE HEADLINE (Fluid Typography for perfect fit) ── */}
+          {/* Responsive Headline */}
           <motion.div
-            key={`title-${category}`}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -100,22 +78,18 @@ export default function HomePage() {
             <div className="font-black text-white uppercase tracking-tighter text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] sm:leading-[0.85]">
               EXPRESSED IN
             </div>
-            {/* Fluid sizing (vw) ensures the massive text never breaks the screen edges on mobile */}
             <div className="font-black uppercase tracking-tighter text-[16vw] sm:text-8xl md:text-9xl lg:text-[10rem] text-[#FFCC00] leading-[0.8] mt-2 sm:mt-1">
               STYLE
             </div>
           </motion.div>
 
           <motion.p
-            key={`desc-${category}`}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15 }}
             className="text-gray-300 text-xs sm:text-base md:text-xl max-w-2xl mt-6 mb-8 px-2 sm:px-4 leading-relaxed"
           >
-            {isWomen
-              ? "Experience the pinnacle of luxury styling, premium color, and aesthetic treatments exclusively for women."
-              : "Experience the ultimate standard in modern barbering, precision fades, and timeless style."}
+            Experience the ultimate standard in modern barbering, precision fades, and timeless style.
           </motion.p>
 
           <motion.div
@@ -124,47 +98,12 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.25 }}
             className="w-full px-4 sm:px-0 flex justify-center"
           >
-            {/* max-w-sm ensures button doesn't stretch too long on tablets */}
             <Link
               href="/services"
               className="px-8 py-4 sm:py-5 bg-[#FFCC00] text-black font-black uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-colors shadow-[0_0_20px_rgba(255,204,0,0.3)] flex items-center justify-center gap-2 w-full max-w-sm sm:w-auto"
             >
               Explore Services <ArrowRight size={18} />
             </Link>
-          </motion.div>
-
-          {/* Category Toggle (Forced to flex-row for App-like side-by-side layout on mobile) */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-10 sm:mt-12 flex flex-col items-center w-full px-4 sm:px-6"
-          >
-            <p className="text-gray-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4">
-              Personalize Your Experience
-            </p>
-            <div className="bg-black/60 border border-white/10 p-1 sm:p-2 rounded-full flex flex-row gap-1 sm:gap-2 backdrop-blur-xl w-full max-w-[320px] sm:max-w-lg shadow-2xl">
-              <button
-                onClick={() => setCategory("men")}
-                className={`flex-1 px-2 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
-                  !isWomen
-                    ? "bg-[#FFCC00] text-black shadow-[0_0_20px_rgba(255,204,0,0.3)] scale-100"
-                    : "text-gray-400 hover:text-white scale-95 hover:scale-100"
-                }`}
-              >
-                Men's Grooming
-              </button>
-              <button
-                onClick={() => setCategory("women")}
-                className={`flex-1 px-2 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
-                  isWomen
-                    ? "bg-[#FFCC00] text-black shadow-[0_0_20px_rgba(255,204,0,0.3)] scale-100"
-                    : "text-gray-400 hover:text-white scale-95 hover:scale-100"
-                }`}
-              >
-                Women's Studio
-              </button>
-            </div>
           </motion.div>
         </div>
 
@@ -220,7 +159,6 @@ export default function HomePage() {
           SECTION 3: INFINITE GALLERY
           ========================================= */}
       <section className="py-10 sm:py-12 overflow-hidden bg-black/50 border-y border-white/5 relative">
-        {/* Soft edge fades for desktop */}
         <div className="absolute top-0 right-0 w-16 sm:w-64 h-full bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
         <div className="absolute top-0 left-0 w-16 sm:w-64 h-full bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
 
@@ -277,7 +215,7 @@ export default function HomePage() {
       </section>
 
       {/* =========================================
-          SECTION 4: TESTIMONIALS – YELLOW ACCENT CARDS
+          SECTION 4: TESTIMONIALS
           ========================================= */}
       <section className="py-20 sm:py-24 px-4 sm:px-6 relative">
         <div className="max-w-7xl mx-auto">
@@ -298,11 +236,10 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Grid with yellow‑accent cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {reviewsData.map((review, idx) => (
               <motion.div
-                key={`${category}-${idx}`}
+                key={`men-${idx}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}

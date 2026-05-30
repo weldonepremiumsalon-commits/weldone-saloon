@@ -1,26 +1,17 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCategory } from "@/components/CategoryProvider";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-import { MEN_SERVICES, WOMEN_SERVICES } from "@/lib/data";
+import { MEN_SERVICES } from "@/lib/data";
 
 export default function ServicesPage() {
-  // --- GLOBAL CATEGORY STATE ---
-  const { category } = useCategory();
-  
-  // Choose which data set to display
-  const serviceCategories = category === "women" ? WOMEN_SERVICES : MEN_SERVICES;
-  const pageTitle = category === "women" ? "STUDIO SERVICES" : "BARBERSHOP SERVICES";
+  // Always use men's data
+  const serviceCategories = MEN_SERVICES;
+  const pageTitle = "BARBERSHOP SERVICES";
 
-  // Local state: currently active category (by id) inside the selected data set
+  // Local state: currently active category (by id)
   const [activeCategory, setActiveCategory] = useState(serviceCategories[0].id);
-
-  // Reset the active sub‑category when the global category (men/women) changes
-  useEffect(() => {
-    setActiveCategory(serviceCategories[0].id);
-  }, [category, serviceCategories]);
 
   const currentData = serviceCategories.find(cat => cat.id === activeCategory);
 
@@ -49,9 +40,7 @@ export default function ServicesPage() {
           OUR <span className="text-[#FFCC00]">{pageTitle.split(" ")[0]}</span> {pageTitle.split(" ")[1]}
         </h1>
         <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-          {category === "women"
-            ? "Luxury treatments, precision colour, and indulgent care."
-            : "Comprehensive grooming and wellness treatments."}
+          Comprehensive grooming and wellness treatments.
         </p>
       </motion.div>
 
@@ -94,7 +83,7 @@ export default function ServicesPage() {
         <div className="md:w-2/3 lg:w-3/4 min-h-[500px]">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeCategory}   // key change triggers animation only on sub‑category switch
+              key={activeCategory}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}

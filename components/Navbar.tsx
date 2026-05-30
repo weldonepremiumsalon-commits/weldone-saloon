@@ -4,12 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { useCategory } from "@/components/CategoryProvider";
-import { MEN_BRANCHES, WOMEN_BRANCHES } from "@/lib/data";
+import { MEN_BRANCHES } from "@/lib/data";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { category } = useCategory();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileBranchOpen, setMobileBranchOpen] = useState(false);
 
@@ -18,10 +16,11 @@ export default function Navbar() {
     setMobileBranchOpen(false);
   }, [pathname]);
 
-  // Build branch sublinks directly from data.ts — always in sync
-  const branchSubLinks = category === "women"
-    ? WOMEN_BRANCHES.map((b) => ({ name: b.name, path: `/womens-studio` }))
-    : MEN_BRANCHES.map((b) => ({ name: b.name, path: `/branches/${b.slug}` }));
+  // Build branch sublinks from men's data only
+  const branchSubLinks = MEN_BRANCHES.map((b) => ({
+    name: b.name,
+    path: `/branches/${b.slug}`,
+  }));
 
   const links = [
     { name: "Home", path: "/" },
@@ -32,7 +31,7 @@ export default function Navbar() {
       path: "/branches",
       subLinks: branchSubLinks,
     },
-    { name: category === "women" ? "Stylists" : "Barbers", path: "/barbers" },
+    { name: "Barbers", path: "/barbers" },
     { name: "Gallery", path: "/gallery" },
     { name: "Reviews", path: "/reviews" },
     { name: "Contact", path: "/contact" },
@@ -41,7 +40,10 @@ export default function Navbar() {
   return (
     <>
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[90] lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
+        <div
+          className="fixed inset-0 z-[90] lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
       )}
 
       <motion.nav
@@ -52,13 +54,19 @@ export default function Navbar() {
       >
         <div className="flex justify-between items-center px-6 py-4 w-full relative z-10">
           <Link href="/" className="group flex-shrink-0">
-            <img src="/logo.png" alt="Logo" className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
+            />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex gap-8 items-center">
             {links.map((link) => {
-              const isActive = pathname === link.path || (link.subLinks && pathname.startsWith(link.path));
+              const isActive =
+                pathname === link.path ||
+                (link.subLinks && pathname.startsWith(link.path));
 
               if (link.subLinks) {
                 return (
@@ -66,11 +74,18 @@ export default function Navbar() {
                     <div className="flex items-center gap-1 cursor-pointer">
                       <Link
                         href={link.path}
-                        className={`text-sm font-bold uppercase tracking-wider transition-colors ${isActive ? "text-[#FFCC00]" : "text-gray-400 group-hover:text-white"}`}
+                        className={`text-sm font-bold uppercase tracking-wider transition-colors ${
+                          isActive
+                            ? "text-[#FFCC00]"
+                            : "text-gray-400 group-hover:text-white"
+                        }`}
                       >
                         {link.name}
                       </Link>
-                      <ChevronDown size={14} className="text-gray-400 group-hover:text-white group-hover:rotate-180 transition-transform" />
+                      <ChevronDown
+                        size={14}
+                        className="text-gray-400 group-hover:text-white group-hover:rotate-180 transition-transform"
+                      />
                     </div>
 
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all">
@@ -91,15 +106,31 @@ export default function Navbar() {
               }
 
               return (
-                <Link key={link.name} href={link.path} className={`text-sm font-bold uppercase tracking-wider transition-colors relative py-2 ${isActive ? "text-[#FFCC00]" : "text-gray-400 hover:text-white"}`}>
+                <Link
+                  key={link.name}
+                  href={link.path}
+                  className={`text-sm font-bold uppercase tracking-wider transition-colors relative py-2 ${
+                    isActive
+                      ? "text-[#FFCC00]"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
                   {link.name}
-                  {isActive && <motion.div layoutId="navline" className="absolute -bottom-2 left-0 right-0 h-[2px] bg-[#FFCC00] rounded-full" />}
+                  {isActive && (
+                    <motion.div
+                      layoutId="navline"
+                      className="absolute -bottom-2 left-0 right-0 h-[2px] bg-[#FFCC00] rounded-full"
+                    />
+                  )}
                 </Link>
               );
             })}
           </div>
 
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden text-[#FFCC00] p-2 bg-white/5 rounded-lg border border-white/10">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden text-[#FFCC00] p-2 bg-white/5 rounded-lg border border-white/10"
+          >
             {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -107,7 +138,12 @@ export default function Navbar() {
         {/* Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="lg:hidden overflow-hidden border-t border-white/10 mx-4 bg-black/50">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="lg:hidden overflow-hidden border-t border-white/10 mx-4 bg-black/50"
+            >
               <div className="flex flex-col gap-2 py-6">
                 {links.map((link) => {
                   const isActive = pathname === link.path;
@@ -118,24 +154,43 @@ export default function Navbar() {
                         <div className="flex items-center gap-4 py-2">
                           <Link
                             href={link.path}
-                            className={`text-base font-bold uppercase tracking-wider ${isActive ? "text-[#FFCC00]" : "text-gray-400"}`}
+                            className={`text-base font-bold uppercase tracking-wider ${
+                              isActive ? "text-[#FFCC00]" : "text-gray-400"
+                            }`}
                           >
                             {link.name}
                           </Link>
                           <button
-                            onClick={(e) => { e.preventDefault(); setMobileBranchOpen(!mobileBranchOpen); }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setMobileBranchOpen(!mobileBranchOpen);
+                            }}
                             className="p-2 bg-white/5 rounded-full border border-white/10"
                           >
-                            <ChevronDown size={16} className={`transition-transform text-[#FFCC00] ${mobileBranchOpen ? "rotate-180" : ""}`} />
+                            <ChevronDown
+                              size={16}
+                              className={`transition-transform text-[#FFCC00] ${
+                                mobileBranchOpen ? "rotate-180" : ""
+                              }`}
+                            />
                           </button>
                         </div>
 
                         <AnimatePresence>
                           {mobileBranchOpen && (
-                            <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden w-full px-8">
+                            <motion.div
+                              initial={{ height: 0 }}
+                              animate={{ height: "auto" }}
+                              exit={{ height: 0 }}
+                              className="overflow-hidden w-full px-8"
+                            >
                               <div className="flex flex-col bg-white/5 rounded-2xl py-2 my-2">
                                 {link.subLinks.map((sub) => (
-                                  <Link key={sub.name} href={sub.path} className="py-4 text-sm font-bold text-gray-300 hover:text-[#FFCC00] text-center uppercase tracking-widest">
+                                  <Link
+                                    key={sub.name}
+                                    href={sub.path}
+                                    className="py-4 text-sm font-bold text-gray-300 hover:text-[#FFCC00] text-center uppercase tracking-widest"
+                                  >
                                     {sub.name}
                                   </Link>
                                 ))}
@@ -148,7 +203,13 @@ export default function Navbar() {
                   }
 
                   return (
-                    <Link key={link.name} href={link.path} className={`text-base font-bold uppercase tracking-wider block text-center py-2 ${isActive ? "text-[#FFCC00]" : "text-gray-400"}`}>
+                    <Link
+                      key={link.name}
+                      href={link.path}
+                      className={`text-base font-bold uppercase tracking-wider block text-center py-2 ${
+                        isActive ? "text-[#FFCC00]" : "text-gray-400"
+                      }`}
+                    >
                       {link.name}
                     </Link>
                   );
