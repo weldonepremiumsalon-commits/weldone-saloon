@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { CategoryProvider } from "@/components/CategoryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,13 +15,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="overflow-x-hidden">
       <body className={`${inter.className} bg-[#050505] text-white overflow-x-hidden antialiased`}>
-        <CategoryProvider>
-          <Navbar />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <Footer />
-        </CategoryProvider>
+        <Navbar />
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

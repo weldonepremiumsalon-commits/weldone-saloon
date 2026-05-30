@@ -226,18 +226,14 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {reviewsData.map((review, idx) => (
-              <motion.div
-                key={`men-${idx}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl cursor-default
-                           bg-gradient-to-br from-[#FFCC00]/10 to-transparent
-                           border border-[#FFCC00]/20
-                           hover:border-[#FFCC00]/60 hover:shadow-[0_0_30px_rgba(255,204,0,0.25)]
-                           transition-all duration-500 ease-out"
-              >
+              <motion.div 
+  key={idx} 
+  initial={{ opacity: 0, y: 20 }} 
+  whileInView={{ opacity: 1, y: 0 }} 
+  transition={{ duration: 0.4, delay: idx * 0.1 }} 
+  viewport={{ once: true }} 
+  className="group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl cursor-default bg-gradient-to-br from-[#FFCC00]/10 to-transparent border border-[#FFCC00]/20 hover:border-[#FFCC00]/60 hover:shadow-[0_0_30px_rgba(255,204,0,0.25)] transition-all duration-500 ease-out"
+>
                 <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-[#FFCC00]/0 group-hover:bg-[#FFCC00]/5 transition-all duration-500" />
                 <Quote
                   size={40}
