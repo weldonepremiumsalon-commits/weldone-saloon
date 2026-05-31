@@ -1,11 +1,3 @@
-// Gallery preview image arrays (replace with your actual image URLs or local paths)
-export const MEN_GALLERY_PREVIEW = [
-  "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1512690459411-b9245aed614b?q=80&w=800&auto=format&fit=crop",
-];
 
 // Reviews
 export const MEN_REVIEWS = [
@@ -51,7 +43,8 @@ export const MEN_BRANCHES = [
       "/vignan 4.png",
       "/vignan 2.png",
       "/vignan 1.png",
-      "/vignan 3.png"
+      "/vignan 3.png",
+      "/vignan 10.png"
     ]
   },
 { 
@@ -292,5 +285,6 @@ export const GALLERY_INTERIOR = [
     { id: 13, title: "WELDONE Advanced Instruments", category: "", image: "/vignan 2.png" }, 
   { id:14, title: "Captain In Action", category: "", image: "/vignan 3.png" },
   { id: 15, title: "WELDONE PARLOUR", category: "", image: "/vignan 4.png" },
+    { id: 18, title: "WELDONE PARLOUR", category: "", image: "/vignan 10.png" },
 
 ];
