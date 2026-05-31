@@ -50,9 +50,11 @@ export default function BranchClient({ slug }: { slug: string }) {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative bg-[#050505]">
-            <img src={branch.image} alt={branch.name} className="w-full h-[350px] sm:h-[450px] lg:h-[500px] object-cover object-center" />
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
-          </motion.div>
+  <div className="w-full aspect-video">
+    <img src={branch.image} alt={branch.name} className="w-full h-full object-cover object-center" />
+  </div>
+  <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
+</motion.div>
         </div>
 
         {/* SECTION 3: Interactive Live Google Map */}
