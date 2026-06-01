@@ -123,6 +123,11 @@ export const MEN_TEAM = [
     location: "Kuvempu Road", 
     image: "/Fardeen.png" 
   },
+  {
+    name:"Faizan",
+    location:"Vignan Nagar Branch",
+    image:"/Faizan.png"
+  }
 ];
 
 // ==========================================
