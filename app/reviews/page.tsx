@@ -1,58 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Star, MessageSquare, TrendingUp, User, Send, MapPin } from "lucide-react";
+import { Star, MessageSquare, TrendingUp, User, Send, MapPin, Loader2 } from "lucide-react";
 
 import { MEN_BRANCHES } from "@/lib/data";
+import { supabase } from "@/lib/supabase"; // Make sure this path is correct for your project!
 
-// ------------------------------------------------------------------
-// 🔌 SUPABASE INTEGRATION — TODO LIST (for men's reviews)
-// ------------------------------------------------------------------
-// 1. npm install @supabase/supabase-js
-// 2. Create lib/supabaseClient.ts:
-//      import { createClient } from "@supabase/supabase-js";
-//      export const supabase = createClient(
-//        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-//      );
-// 3. Create "reviews" table (SQL):
-//      create table reviews (
-//        id uuid primary key default uuid_generate_v4(),
-//        name text not null,
-//        rating smallint not null check (rating >= 1 and rating <= 5),
-//        branch text not null,
-//        comment text not null,
-//        created_at timestamptz default now()
-//      );
-//      alter table reviews enable row level security;
-//      create policy "read" on reviews for select using (true);
-//      create policy "insert" on reviews for insert with check (true);
-// 4. Replace useState init with a useEffect fetch:
-//      useEffect(() => {
-//        const load = async () => {
-//          const { data } = await supabase
-//            .from("reviews")
-//            .select("*")
-//            .eq("category", "men")
-//            .order("created_at", { ascending: false });
-//          if (data) setReviews(data);
-//        };
-//        load();
-//      }, []);
-// 5. Replace optimistic insert in handleSubmit with:
-//      const { error } = await supabase.from("reviews").insert([newReview]);
-//      if (!error) setReviews((prev) => [newReview, ...prev]);
-// 6. Add to .env.local:
-//      NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-//      NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-// ------------------------------------------------------------------
-
+// Updated interface to match Supabase schema exactly
 interface Review {
-  id: number;
+  id: string;
   name: string;
   rating: number;
   branch: string;
-  date: string;
+  created_at: string;
   comment: string;
 }
 
@@ -63,18 +23,12 @@ interface FormData {
   comment: string;
 }
 
-// ⚠️ MOCK DATA — remove once Supabase fetch (TODO #4) is wired in
-const INITIAL_REVIEWS: Review[] = [
-  { id: 1, name: "Arjun M.",  rating: 5, date: "May 2, 2026",    branch: "Byatarayanapura",    comment: "Absolutely flawless fade. The hot towel shave is a must-try experience." },
-  { id: 2, name: "Rohan K.",  rating: 4, date: "April 15, 2026", branch: "Vignan Nagar Branch", comment: "Great atmosphere and a sharp cut. Had to wait a few minutes, but the result was worth it." },
-  { id: 3, name: "Kiran S.",  rating: 5, date: "April 10, 2026", branch: "Basava Nagar Branch", comment: "Best barbershop in Bangalore, hands down. The vibe is immaculate and the service is elite." },
-];
-
 export default function ReviewsPage() {
   const activeBranches = MEN_BRANCHES;
 
-  // ⚠️ Replace with Supabase fetch for category "men" (TODO #4)
-  const [reviews, setReviews] = useState<Review[]>(INITIAL_REVIEWS);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [hoveredStar, setHoveredStar] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -83,6 +37,25 @@ export default function ReviewsPage() {
     branch: "",
     comment: "",
   });
+
+  // ── Fetch Reviews from Supabase on Load ──
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (data && !error) {
+        setReviews(data);
+      } else {
+        console.error("Error fetching reviews:", error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchReviews();
+  }, []);
 
   // ── Stats ──
   const totalReviews = reviews.length;
@@ -94,27 +67,36 @@ export default function ReviewsPage() {
     ? Math.round((fiveStarCount / totalReviews) * 100)
     : 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ── Submit Review to Supabase ──
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.comment || !formData.branch) return;
 
-    const newReview: Review = {
-      id: Date.now(),
-      name: formData.name,
-      rating: formData.rating,
-      branch: formData.branch,
-      date: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      comment: formData.comment,
-    };
+    setIsSubmitting(true);
 
-    // ⚠️ Optimistic local insert — replace with Supabase insert (TODO #5)
-    setReviews((prev) => [newReview, ...prev]);
+    const { data, error } = await supabase
+      .from("reviews")
+      .insert([
+        {
+          name: formData.name,
+          rating: formData.rating,
+          branch: formData.branch,
+          comment: formData.comment,
+        }
+      ])
+      .select(); // Selects the newly inserted row back
 
-    setFormData({ name: "", rating: 5, branch: "", comment: "" });
+    if (!error && data) {
+      // Add the new review to the top of the list instantly
+      setReviews((prev) => [data[0], ...prev]);
+      // Clear the form
+      setFormData({ name: "", rating: 5, branch: "", comment: "" });
+    } else {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
+    }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -137,7 +119,7 @@ export default function ReviewsPage() {
         <div className="lg:col-span-5 space-y-8">
 
           {/* Rating summary */}
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="glass-card bg-black/60 p-8 rounded-3xl border border-white/5">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="glass-card bg-black/60 p-8 rounded-3xl border border-white/5 shadow-xl">
             <h2 className="text-xl font-bold mb-6 text-white flex items-center gap-2">
               <TrendingUp className="text-[#FFCC00]" size={20} /> Overall Rating
             </h2>
@@ -156,7 +138,7 @@ export default function ReviewsPage() {
           </motion.div>
 
           {/* Review form */}
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="glass-card bg-black/60 p-8 rounded-3xl border border-white/5">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="glass-card bg-black/60 p-8 rounded-3xl border border-white/5 shadow-xl">
             <h2 className="text-xl font-bold mb-6 text-white flex items-center gap-2">
               <MessageSquare className="text-[#FFCC00]" size={20} /> Leave a Review
             </h2>
@@ -200,7 +182,7 @@ export default function ReviewsPage() {
                 </div>
               </div>
 
-              {/* Branch dropdown — only men's branches */}
+              {/* Branch dropdown */}
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-400 uppercase">Branch Visited</label>
                 <div className="relative">
@@ -238,9 +220,14 @@ export default function ReviewsPage() {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-[#FFCC00] text-black font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 hover:bg-amber-400 transition-colors hover:scale-[1.02] active:scale-[0.98]"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-[#FFCC00] text-black font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 hover:bg-amber-400 transition-colors hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
               >
-                Post Review <Send size={18} />
+                {isSubmitting ? (
+                  <>Posting... <Loader2 size={18} className="animate-spin" /></>
+                ) : (
+                  <>Post Review <Send size={18} /></>
+                )}
               </button>
             </form>
           </motion.div>
@@ -249,22 +236,41 @@ export default function ReviewsPage() {
         {/* RIGHT COLUMN: Review Feed */}
         <div className="lg:col-span-7">
           <div className="flex flex-col gap-6">
-            {reviews.length === 0 && (
-              <p className="text-gray-500 text-center py-20">No reviews yet — be the first!</p>
+            
+            {/* Loading State */}
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+                <Loader2 size={40} className="animate-spin mb-4 text-[#FFCC00]" />
+                <p>Loading reviews...</p>
+              </div>
             )}
-            {reviews.map((review, index) => (
+
+            {/* Empty State */}
+            {!isLoading && reviews.length === 0 && (
+              <p className="text-gray-500 text-center py-20 bg-white/5 rounded-3xl border border-white/5">
+                No reviews yet — be the first to leave one!
+              </p>
+            )}
+
+            {/* Render Reviews */}
+            {!isLoading && reviews.map((review, index) => (
               <motion.div
                 key={review.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="glass-card bg-black/40 p-6 sm:p-8 rounded-3xl border border-white/5 hover:border-[#FFCC00]/20 transition-colors"
+                transition={{ delay: index * 0.05 }}
+                className="glass-card bg-black/40 p-6 sm:p-8 rounded-3xl border border-white/5 hover:border-[#FFCC00]/20 transition-colors shadow-lg"
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
                   <div>
                     <h3 className="font-bold text-lg text-white">{review.name}</h3>
                     <div className="flex items-center gap-3 mt-1">
-                      <p className="text-xs text-gray-500 font-medium tracking-widest uppercase">{review.date}</p>
+                      {/* Formats the Supabase UTC timestamp nicely */}
+                      <p className="text-xs text-gray-500 font-medium tracking-widest uppercase">
+                        {new Date(review.created_at).toLocaleDateString("en-US", {
+                          month: "short", day: "numeric", year: "numeric"
+                        })}
+                      </p>
                       <span className="w-1 h-1 bg-gray-600 rounded-full" />
                       <p className="text-xs text-[#FFCC00] font-medium tracking-widest flex items-center gap-1">
                         <MapPin size={12} /> {review.branch}

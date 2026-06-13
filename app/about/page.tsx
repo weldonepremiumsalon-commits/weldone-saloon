@@ -11,17 +11,17 @@ const stats = [
 const timeline = [
   {
     year: "2002",
-    title: "The First Cut",
+    title: "Men Saloon Basava Nagar",
     desc: "Weldone opened its doors in Byatarayanapura, Bangalore — a single chair, a bold vision, and an obsession with precision grooming.",
   },
   {
-    year: "2023",
-    title: "Growing the Brand",
+    year: "2019",
+    title: "Men Saloon Kuvempu Road",
     desc: "Demand exploded. Two new branches launched across Bangalore, each designed as a premium experience space — not just a salon.",
   },
   {
     year: "2024",
-    title: "Men & Women",
+    title: "Men Saloon Vignan Nagar",
     desc: "Weldone expanded its vision beyond barbering, launching dedicated women's studios to bring the same premium experience to all.",
   },
 
@@ -87,10 +87,10 @@ export default function AboutPage() {
               THE <span className="text-[#FFCC00]">STORY</span>
             </h2>
             <p className="text-gray-300 leading-relaxed mb-4">
-              It started with a frustration. Founder Shashank walked into yet another average salon in Bangalore, sat in a dingy chair under flickering lights, and decided: <span className="text-white font-semibold">enough.</span>
+              It started with a frustration. Founder Babu walked into yet another average salon in Bangalore, sat in a dingy chair under flickering lights, and decided: <span className="text-white font-semibold">enough.</span>
             </p>
             <p className="text-gray-300 leading-relaxed mb-4">
-              In 2022, the first Weldone branch opened in Byatarayanapura — a small space with an enormous attitude. No clutter, no chaos. Just clean lines, skilled hands, and a soundtrack that hits right.
+              In 2002, the first Weldone branch opened in Byatarayanapura — a small space with an enormous attitude. No clutter, no chaos. Just clean lines, skilled hands, and a soundtrack that hits right.
             </p>
             <p className="text-gray-300 leading-relaxed">
               The city noticed. Within months, the waitlist was full. Within a year, new branches were demanded. Today, Weldone has become the benchmark for premium grooming in Bangalore — and we're only getting started.

@@ -2,16 +2,46 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Scissors, Star, Quote } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-import { MEN_BRANCHES, MEN_REVIEWS, GALLERY_INTERIOR } from "@/lib/data";
+// Removed MEN_REVIEWS, added supabase import
+import { MEN_BRANCHES, GALLERY_INTERIOR } from "@/lib/data";
+import { supabase } from "@/lib/supabase";
+
+// Define the Review type based on your Supabase schema
+interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+}
 
 export default function HomePage() {
   const videoSrc = "/hero.mp4";
-  const posterImage =
-    "/saloon.png";
+  const posterImage = "/saloon.png";
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // ── Database State for Reviews ──
+  const [reviewsData, setReviewsData] = useState<Review[]>([]);
+
+  // ── Fetch, Shuffle, and Limit Reviews ──
+  useEffect(() => {
+    const fetchAndShuffleReviews = async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*");
+
+      if (data && !error && data.length > 0) {
+        // Shuffle the array randomly
+        const shuffled = data.sort(() => 0.5 - Math.random());
+        // Keep only the first 4 reviews
+        setReviewsData(shuffled.slice(0, 4));
+      }
+    };
+
+    fetchAndShuffleReviews();
+  }, []);
 
   // Get all interior image URLs
   const allInteriorImages = GALLERY_INTERIOR.map((item) => item.image);
@@ -27,7 +57,6 @@ export default function HomePage() {
 
   const marqueeText =
     "HAIR CUT & SHAVE • HEAD MASSAGE • HAIR SPA • HAIR COLOURING • SKIN CARE FACIAL • NATURAL FACIAL • RAAGA • CLEAN UP • D-TAN • ";
-  const reviewsData = MEN_REVIEWS;
 
   return (
     <div className="bg-[#050505] text-white overflow-x-hidden w-full">
@@ -147,13 +176,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 3: INFINITE GALLERY – two rows with unique image sets */}
+      {/* SECTION 3: INFINITE GALLERY */}
       <section className="py-10 sm:py-12 overflow-hidden bg-black/50 border-y border-white/5 relative">
         <div className="absolute top-0 right-0 w-16 sm:w-64 h-full bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
         <div className="absolute top-0 left-0 w-16 sm:w-64 h-full bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
 
         <div className="flex flex-col gap-3 sm:gap-4">
-          {/* Row 1: Left to Right */}
           <motion.div
             className="flex w-max gap-3 sm:gap-4"
             animate={{ x: ["-50%", "0%"] }}
@@ -173,7 +201,6 @@ export default function HomePage() {
             ))}
           </motion.div>
 
-          {/* Row 2: Right to Left – uses completely different images */}
           <motion.div
             className="flex w-max gap-3 sm:gap-4"
             animate={{ x: ["0%", "-50%"] }}
@@ -226,14 +253,14 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {reviewsData.map((review, idx) => (
-              <motion.div 
-  key={idx} 
-  initial={{ opacity: 0, y: 20 }} 
-  whileInView={{ opacity: 1, y: 0 }} 
-  transition={{ duration: 0.4, delay: idx * 0.1 }} 
-  viewport={{ once: true }} 
-  className="group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl cursor-default bg-gradient-to-br from-[#FFCC00]/10 to-transparent border border-[#FFCC00]/20 hover:border-[#FFCC00]/60 hover:shadow-[0_0_30px_rgba(255,204,0,0.25)] transition-all duration-500 ease-out"
->
+              <motion.div
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl cursor-default bg-gradient-to-br from-[#FFCC00]/10 to-transparent border border-[#FFCC00]/20 hover:border-[#FFCC00]/60 hover:shadow-[0_0_30px_rgba(255,204,0,0.25)] transition-all duration-500 ease-out"
+              >
                 <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-[#FFCC00]/0 group-hover:bg-[#FFCC00]/5 transition-all duration-500" />
                 <Quote
                   size={40}
@@ -249,7 +276,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 italic pr-4">
-                  &quot;{review.text}&quot;
+                  &quot;{review.comment}&quot;
                 </p>
                 <div className="text-[#FFCC00] font-bold uppercase tracking-widest text-xs sm:text-sm">
                   — {review.name}
