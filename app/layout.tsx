@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "WELDONE | Premium Grooming",
   description: "The ultimate standard in modern styling.",
+  manifest: "/manifest.json", // Add this line!
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
