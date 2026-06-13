@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'; // Prevents Next.js from pre-rendering this route at build time
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
