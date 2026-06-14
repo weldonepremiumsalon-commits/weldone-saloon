@@ -95,7 +95,7 @@ export default function ServicesPage() {
               <div className="relative w-full h-48 sm:h-64 lg:h-72">
                 {/* 3. Swapped to Optimized Next Image */}
                 <Image
-                  src={currentData?.image || "/saloon.png"}
+                  src={currentData?.image || "/saloon.avif"}
                   alt={currentData?.title || "Service"}
                   fill
                   priority // Instantly load the category banner image

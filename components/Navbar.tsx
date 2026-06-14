@@ -77,7 +77,7 @@ export default function Navbar() {
             <Link href="/" className="group flex-shrink-0">
               {/* 2. Upgraded Mobile Logo */}
               <Image
-                src="/logo.png"
+                src="/logo.avif"
                 alt="Logo"
                 width={160}
                 height={48}
@@ -194,7 +194,7 @@ export default function Navbar() {
             <Link href="/" className="relative z-50">
               {/* 3. Upgraded Desktop Logo */}
               <Image
-                src="/logo.png"
+                src="/logo.avif"
                 alt="WELDONE"
                 width={160}
                 height={48}
@@ -385,7 +385,7 @@ export default function Navbar() {
                 <div className="mt-auto p-10 border-t border-white/5">
                   {/* 4. Upgraded Tablet Drawer Logo */}
                   <Image
-                    src="/logo.png"
+                    src="/logo.avif"
                     alt="WELDONE"
                     width={120}
                     height={32}

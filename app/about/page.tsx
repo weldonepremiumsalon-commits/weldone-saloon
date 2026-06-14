@@ -101,7 +101,7 @@ export default function AboutPage() {
           >
             {/* 3. Replaced img with Next.js Image */}
             <Image
-              src="/vision.png"
+              src="/vision.avif"
               alt="Weldone Interior"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"

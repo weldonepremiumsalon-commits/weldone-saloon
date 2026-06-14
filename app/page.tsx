@@ -17,7 +17,7 @@ interface Review {
 
 export default function HomePage() {
   const videoSrc = "/hero.mp4";
-  const posterImage = "/saloon.png";
+  const posterImage = "/saloon.avif";
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 

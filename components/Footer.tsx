@@ -17,7 +17,7 @@ export default function Footer() {
             <Link href="/" className="group inline-block">
               {/* 2. Swapped Footer Logo */}
               <Image 
-                src="/logo.png" 
+                src="/logo.avif" 
                 alt="Weldone Barbers Logo" 
                 width={180}
                 height={64}
