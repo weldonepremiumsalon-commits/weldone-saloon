@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image"; // 1. Added Next.js Image import
 import { MapPin } from "lucide-react";
 import { MEN_SERVICES } from "@/lib/data";
 
@@ -90,11 +91,16 @@ export default function ServicesPage() {
               transition={{ duration: 0.4 }}
               className="glass-card bg-black/40 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col"
             >
+              {/* 2. Added relative here for the fill property to work */}
               <div className="relative w-full h-48 sm:h-64 lg:h-72">
-                <img
-                  src={currentData?.image}
-                  alt={currentData?.title}
-                  className="w-full h-full object-cover lg:grayscale hover:grayscale-0 transition-all duration-700"
+                {/* 3. Swapped to Optimized Next Image */}
+                <Image
+                  src={currentData?.image || "/saloon.png"}
+                  alt={currentData?.title || "Service"}
+                  fill
+                  priority // Instantly load the category banner image
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 75vw"
+                  className="object-cover lg:grayscale hover:grayscale-0 transition-all duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-10">

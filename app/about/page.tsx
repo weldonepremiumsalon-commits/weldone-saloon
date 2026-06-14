@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image"; // 1. Added Image import
 
 const stats = [
   { value: "2002", label: "Founded" },
@@ -24,7 +25,6 @@ const timeline = [
     title: "Men Saloon Vignan Nagar",
     desc: "Weldone expanded its vision beyond barbering, launching dedicated women's studios to bring the same premium experience to all.",
   },
-
 ];
 
 const values = [
@@ -97,12 +97,15 @@ export default function AboutPage() {
             </p>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            className="aspect-[4/5] rounded-3xl overflow-hidden glass-card"
+            className="relative aspect-[4/5] rounded-3xl overflow-hidden glass-card" // 2. Added relative here
           >
-            <img
+            {/* 3. Replaced img with Next.js Image */}
+            <Image
               src="/vision.png"
-              className="w-full h-full object-contain bg-[#0a0a0a] transition-all duration-700 lg:grayscale lg:opacity-80 lg:hover:opacity-100 lg:hover:grayscale-0"
               alt="Weldone Interior"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-contain bg-[#0a0a0a] transition-all duration-700 lg:grayscale lg:opacity-80 lg:hover:opacity-100 lg:hover:grayscale-0"
             />
           </motion.div>
         </div>

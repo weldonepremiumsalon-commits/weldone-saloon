@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image"; // 1. Added Image import
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -74,9 +75,13 @@ export default function Navbar() {
         >
           <div className="flex justify-between items-center px-6 py-4 w-full relative z-10">
             <Link href="/" className="group flex-shrink-0">
-              <img
+              {/* 2. Upgraded Mobile Logo */}
+              <Image
                 src="/logo.png"
                 alt="Logo"
+                width={160}
+                height={48}
+                priority
                 className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
               />
             </Link>
@@ -187,9 +192,13 @@ export default function Navbar() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
             {/* Logo */}
             <Link href="/" className="relative z-50">
-              <img
+              {/* 3. Upgraded Desktop Logo */}
+              <Image
                 src="/logo.png"
                 alt="WELDONE"
+                width={160}
+                height={48}
+                priority
                 className="h-8 sm:h-10 w-auto object-contain"
               />
             </Link>
@@ -374,9 +383,12 @@ export default function Navbar() {
 
                 {/* Bottom branding inside the drawer */}
                 <div className="mt-auto p-10 border-t border-white/5">
-                  <img
+                  {/* 4. Upgraded Tablet Drawer Logo */}
+                  <Image
                     src="/logo.png"
                     alt="WELDONE"
+                    width={120}
+                    height={32}
                     className="h-6 w-auto object-contain mb-4 opacity-50"
                   />
                   <p className="text-gray-500 text-xs uppercase tracking-widest font-bold">

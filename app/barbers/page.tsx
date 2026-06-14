@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image"; // 1. Added Next.js Image import
 import { MapPin } from "lucide-react";
 import { MEN_TEAM } from "@/lib/data";
 
@@ -32,10 +33,14 @@ export default function TeamPage() {
               transition={{ delay: index * 0.1 }}
               className="group relative rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] aspect-[4/5]"
             >
-              <img
+              {/* 2. Swapped to Optimized Next Image */}
+              <Image
                 src={artist.image}
                 alt={artist.name}
-                className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={index < 4} // Instantly loads the first row of barbers
+                className="object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
               />
 
               {/* Dark gradient so the white text is always readable */}

@@ -7,11 +7,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  images: {
-    unoptimized: true, 
-  },
   reactCompiler: true, 
-  turbopack: {}, // <-- ADD THIS LINE to bypass the error
+  turbopack: {}, 
 };
 
 export default withPWA(nextConfig);

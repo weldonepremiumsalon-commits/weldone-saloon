@@ -290,6 +290,6 @@ export const GALLERY_INTERIOR = [
     { id: 13, title: "WELDONE Advanced Instruments", category: "", image: "/vignan 2.png" }, 
   { id:14, title: "Captain In Action", category: "", image: "/vignan 3.png" },
   { id: 15, title: "WELDONE PARLOUR", category: "", image: "/vignan 4.png" },
-    { id: 18, title: "WELDONE PARLOUR", category: "", image: "/vignan 10.png" },
+    { id: 18, title: "Barbers In Action", category: "", image: "/vignan 10.png" },
 
 ];

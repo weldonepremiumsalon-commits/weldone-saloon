@@ -1,14 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image"; // 1. Imported Next.js Image Component
 import { ArrowRight, Scissors, Star, Quote } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
-// Removed MEN_REVIEWS, added supabase import
 import { MEN_BRANCHES, GALLERY_INTERIOR } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
 
-// Define the Review type based on your Supabase schema
 interface Review {
   id: string;
   name: string;
@@ -192,10 +191,13 @@ export default function HomePage() {
                 key={`row1-${idx}`}
                 className="w-48 sm:w-64 md:w-80 h-40 sm:h-48 md:h-60 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-white/5 relative group"
               >
-                <img
+                {/* 2. Swapped to Optimized Next Image */}
+                <Image
                   src={src}
                   alt="Branch interior"
-                  className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-500"
+                  fill
+                  sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 320px"
+                  className="object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-500"
                 />
               </div>
             ))}
@@ -211,10 +213,13 @@ export default function HomePage() {
                 key={`row2-${idx}`}
                 className="w-48 sm:w-64 md:w-80 h-40 sm:h-48 md:h-60 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-white/5 relative group"
               >
-                <img
+                {/* 3. Swapped to Optimized Next Image */}
+                <Image
                   src={src}
                   alt="Branch interior"
-                  className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-500"
+                  fill
+                  sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 320px"
+                  className="object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-500"
                 />
               </div>
             ))}

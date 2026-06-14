@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Phone, Clock, ChevronDown, ArrowLeft, Map, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image"; // 1. Added Next.js Image import
 import { MEN_SERVICES, MEN_BRANCHES, MEN_TEAM } from "@/lib/data";
 
 export default function BranchClient({ slug }: { slug: string }) {
@@ -50,11 +51,19 @@ export default function BranchClient({ slug }: { slug: string }) {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative bg-[#050505]">
-  <div className="w-full aspect-video">
-    <img src={branch.image} alt={branch.name} className="w-full h-full object-cover object-center" />
-  </div>
-  <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
-</motion.div>
+            {/* Added relative here for the fill property */}
+            <div className="w-full aspect-video relative">
+              <Image 
+                src={branch.image} 
+                alt={branch.name} 
+                fill
+                priority // Instantly load the main hero image
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover object-center" 
+              />
+            </div>
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
+          </motion.div>
         </div>
 
         {/* SECTION 3: Interactive Live Google Map */}
@@ -92,10 +101,12 @@ export default function BranchClient({ slug }: { slug: string }) {
                   transition={{ delay: idx * 0.1 }} 
                   className="rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-white/5 aspect-[4/3] relative group shadow-lg"
                 >
-                  <img 
+                  <Image 
                     src={img} 
                     alt={`${branch.name} interior ${idx + 1}`} 
-                    className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" 
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" 
                   />
                   <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
                 </motion.div>
@@ -114,7 +125,13 @@ export default function BranchClient({ slug }: { slug: string }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {branchArtists.map((artist, index) => (
                 <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} className="group relative rounded-3xl overflow-hidden border border-white/10 bg-white/5 aspect-[4/5] sm:aspect-square lg:aspect-[4/5]">
-                  <img src={artist.image} alt={artist.name} className="w-full h-full object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
+                  <Image 
+                    src={artist.image} 
+                    alt={artist.name} 
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover lg:grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" 
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90" />
                   <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-2">

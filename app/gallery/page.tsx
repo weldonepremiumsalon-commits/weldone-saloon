@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image"; // 1. Added Next.js Image import
 import { X, ChevronLeft, ChevronRight, Maximize2, Scissors, Sofa } from "lucide-react";
 import { GALLERY_CUTS, GALLERY_INTERIOR } from "@/lib/data";
 
@@ -95,10 +96,14 @@ export default function GalleryPage() {
                   activeTab === "cuts" ? "aspect-[4/5]" : "aspect-[4/3]"
                 }`}
               >
-                <img
+                {/* 2. Swapped Grid Image */}
+                <Image
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 lg:grayscale lg:group-hover:grayscale-0"
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  priority={index < 8} // Instantly loads the first two rows to prevent pop-in
+                  className="object-cover transition-transform duration-700 group-hover:scale-110 lg:grayscale lg:group-hover:grayscale-0"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-4 md:p-5 pointer-events-none">
@@ -145,11 +150,17 @@ export default function GalleryPage() {
               onTouchMove={(e) => setTouchEnd(e.targetTouches[0].clientX)}
               onTouchEnd={onTouchEnd}
             >
-              <img
-                src={activeGallery[selectedIndex].image}
-                alt={activeGallery[selectedIndex].title}
-                className="w-full h-full max-h-[55vh] sm:max-h-[70vh] md:max-h-[75vh] object-contain rounded-lg shadow-2xl pointer-events-none"
-              />
+              {/* 3. Swapped Lightbox Image (Wrapped in bounded relative div for object-contain) */}
+              <div className="relative w-full h-[55vh] sm:h-[70vh] md:h-[75vh]">
+                <Image
+                  src={activeGallery[selectedIndex].image}
+                  alt={activeGallery[selectedIndex].title}
+                  fill
+                  sizes="100vw"
+                  className="object-contain rounded-lg shadow-2xl pointer-events-none"
+                />
+              </div>
+              
               <div className="mt-4 text-center z-10 relative">
                 <span className="text-[#FFCC00] text-xs font-bold uppercase tracking-widest mb-2 block">{activeGallery[selectedIndex].category}</span>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white px-4">{activeGallery[selectedIndex].title}</h2>

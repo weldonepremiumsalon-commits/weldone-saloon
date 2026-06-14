@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image"; // 1. Added Next.js Image import
 import { MapPin, Phone, Mail } from "lucide-react"; 
 
 export default function Footer() {
@@ -14,9 +15,13 @@ export default function Footer() {
           {/* Column 1: THE BRAND LOGO */}
           <div className="space-y-6">
             <Link href="/" className="group inline-block">
-              <img 
+              {/* 2. Swapped Footer Logo */}
+              <Image 
                 src="/logo.png" 
                 alt="Weldone Barbers Logo" 
+                width={180}
+                height={64}
+                priority // Ensures footer logo is fetched early
                 className="h-12 sm:h-16 w-auto object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(255,204,0,0.2)]"
               />
             </Link>

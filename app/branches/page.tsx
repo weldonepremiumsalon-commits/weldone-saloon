@@ -1,6 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image"; // 1. Imported Next.js Image Component
 import { MapPin, Clock, Phone, ArrowRight } from "lucide-react";
 import { MEN_BRANCHES } from "@/lib/data";
 
@@ -27,15 +28,18 @@ export default function BranchesPage() {
               transition={{ delay: index * 0.1 }} 
               className="glass-card bg-black/40 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col group hover:border-white/20"
             >
-              {/* Image container: fixed 16:9 ratio, image fits fully inside without cropping */}
+              {/* Image container: responsive 16:9 box */}
               <div className="w-full h-[220px] relative overflow-hidden">
-  <img 
-    src={branch.image} 
-    alt={branch.name} 
-    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
-  />
-  <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none rounded-t-3xl" />
-</div>
+                <Image 
+                  src={branch.image} 
+                  alt={branch.name} 
+                  fill // 2. Fills the container responsively
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // 3. Only downloads the size needed
+                  priority={index < 3} // 4. Instantly loads the first row of branches
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none rounded-t-3xl" />
+              </div>
               
               <div className="p-6 sm:p-8 flex-grow flex flex-col">
                 <h2 className="text-2xl font-black text-white mb-6">{branch.name}</h2>
